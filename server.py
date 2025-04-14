@@ -30,7 +30,7 @@ async def get_research(message: str) -> str:
     headers = {
         "accept": "application/json",
         "content-type": "application/json",
-        "X-MESSARI-API-KEY": "QvrP9BBhcAclgAGpqCZ-8Galz3GZyzfvMNFmVwNArHJSq4zd"
+        "X-MESSARI-API-KEY": "API-KEY"
     }
     response = requests.post(url, json=payload, headers=headers)
     
