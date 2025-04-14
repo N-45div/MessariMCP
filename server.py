@@ -41,7 +41,7 @@ async def get_mindshare_chart_png(handle : str):
     url = f"https://api.messari.io/signal/v0/x-users/{handle}/time-series/mindshare/1d"
     headers = {
         "accept": "application/json",
-        "X-MESSARI-API-KEY": "QvrP9BBhcAclgAGpqCZ-8Galz3GZyzfvMNFmVwNArHJSq4zd"
+        "X-MESSARI-API-KEY": "API-KEY"
     }
 
     response = requests.get(url, headers=headers)
@@ -79,7 +79,7 @@ async def get_asset_details(message: str) -> str:
     url = f"https://api.messari.io/metrics/v2/assets/details?slugs={message}"
     headers = {
         "accept": "application/json",
-        "x-messari-api-key": "QvrP9BBhcAclgAGpqCZ-8Galz3GZyzfvMNFmVwNArHJSq4zd"
+        "x-messari-api-key": "API-KEY"
     }
     
     response = requests.get(url, headers=headers)
@@ -153,7 +153,7 @@ async def get_trending_details(classes : str) -> str:
     url = f"https://api.messari.io/signal/v0/topics/global/current?sort=trending&classes={classes}"
     headers = {
         "accept": "application/json",
-        "x-messari-api-key": "QvrP9BBhcAclgAGpqCZ-8Galz3GZyzfvMNFmVwNArHJSq4zd"
+        "x-messari-api-key": "API-KEY"
     }
     
     response = requests.get(url, headers=headers)
