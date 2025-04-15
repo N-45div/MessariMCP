@@ -37,40 +37,6 @@ async def get_research(message: str) -> str:
     return response.text
 
 @mcp.tool()
-async def get_mindshare_chart_png(handle : str):
-    url = f"https://api.messari.io/signal/v0/x-users/{handle}/time-series/mindshare/1d"
-    headers = {
-        "accept": "application/json",
-        "X-MESSARI-API-KEY": "API-KEY"
-    }
-
-    response = requests.get(url, headers=headers)
-    data = response.json()["data"]["points"]
-
-    # Unpack data into lists
-    timestamps = [point[0] for point in data]
-    scores = [point[2] for point in data]
-
-    # Plotting
-    plt.figure(figsize=(10, 4))
-    plt.plot(timestamps, scores, linestyle=':', marker='o', color='blue')
-    plt.title("Mindshare Score Over Time")
-    plt.xlabel("Timestamp")
-    plt.ylabel("Score")
-    plt.grid(True)
-
-    # Save to memory buffer
-    buf = io.BytesIO()
-    plt.savefig(buf, format='png')
-    buf.seek(0)
-    plt.close()
-
-    # Return image bytes
-    response = buf.getvalue()
-    img_base64 = base64.b64encode(response).decode("utf-8")
-    return img_base64
-
-@mcp.tool()
 async def get_asset_details(message: str) -> str:
     """
     Get latest details about a cryptocurrency asset by its slug
