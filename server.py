@@ -112,19 +112,29 @@ async def get_asset_details(message: str) -> str:
     return json.dumps(result)
 
 @mcp.tool()
-async def get_trending_details(classes : str) -> str:
+async def get_trending_details(classes: str) -> str:
     """
-    Get latest trending topics trends with X posts for better engagement in crypto world
+    Get latest trending topics with X posts for better engagement in the crypto world.
+
+    Args:
+        classes (str): Comma-separated list of topic classes to filter trends (e.g., "Legal and Regulatory,Macro Commentary").
+
+    Returns:
+        str: JSON string containing trending topics, summaries, references, and relevant X posts.
     """
     url = f"https://api.messari.io/signal/v0/topics/global/current?sort=trending&classes={classes}"
     headers = {
         "accept": "application/json",
-        "x-messari-api-key": "API-KEY"
+        "x-messari-api-key": "YOUR-API-KEY-HERE"  # Replace with your actual Messari API key
     }
     
-    response = requests.get(url, headers=headers)
-    response_data = json.loads(response.text)
-    
+    try:
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()  # Raise an exception for bad status codes
+        response_data = response.json()
+    except requests.RequestException as e:
+        return json.dumps({"error": f"Failed to fetch data: {str(e)}"})
+
     if "data" not in response_data or not response_data["data"]:
         return json.dumps({"error": "No data found for the prompt"})
     
@@ -135,22 +145,34 @@ async def get_trending_details(classes : str) -> str:
     for trend_data in trend_data_list:
         # Prioritize title, summary, and headline (content)
         trending_item = {
-            "title": trend_data.get("title", "No title"),
+            "Title": trend_data.get("title", "No title"),
             "Summary": trend_data.get("summary", "No summary"),
             "Headline": trend_data.get("content", "No content")
         }
         
         # Extract only the top 2 references from topDocuments
-        if "topDocuments" in trend_data and trend_data["topDocuments"] and len(trend_data["topDocuments"]) > 0:
-            # Limit to only 2 top documents
+        references = []
+        x_posts = []
+        if "topDocuments" in trend_data and trend_data["topDocuments"]:
+            # Limit to top 2 documents for references
             top_docs = trend_data["topDocuments"][:2]
-            references = []
             for doc in top_docs:
+                doc_type = doc.get("type", "Unknown")
+                url = doc.get("url", "No URL")
                 references.append({
-                    "url": doc.get("url", "No URL"),
-                    "type": doc.get("type", "Unknown")
+                    "url": url,
+                    "type": doc_type
                 })
-            trending_item["References"] = references
+                # If the document is an X post, add it to the x_posts list
+                if doc_type == "x_post":
+                    x_posts.append({
+                        "url": url,
+                        "content": "Content not directly available via API; visit the URL for details."
+                    })
+        
+        trending_item["References"] = references
+        if x_posts:
+            trending_item["Related X Posts"] = x_posts
         
         # Add rank information if available
         if "rank" in trend_data:
@@ -162,7 +184,8 @@ async def get_trending_details(classes : str) -> str:
         
         result["Top Trending in Crypto Market"].append(trending_item)
     
-    return json.dumps(result)
+    return json.dumps(result, indent=2)
+    
 if __name__ == "__main__":
     # Initialize and run the server
     mcp.run(transport='stdio')
