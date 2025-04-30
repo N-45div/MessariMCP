@@ -41,6 +41,18 @@ The MCP Server provides a backend for broader mindshare comparison functionality
 
 ---
 
+## API List
+
+The following APIs are used in this project:
+
+- **Copilot Agent API**
+- **Current Topics API**
+- **X-Users Mindshare Over Time API**
+- **Mindshare of Asset Over Time API**
+- **Asset Details API**
+
+---
+
 ## 📄 License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
